@@ -1,0 +1,70 @@
+@charset "UTF-8";
+
+/* Base Sidebar Styles */
+.sidebar {
+    background-color: #ffffff;
+    transition: transform 0.3s ease-in-out;
+}
+
+/* Desktop Sidebar Logic */
+@media (min-width: 992px) {
+    .sidebar {
+        width: 260px !important;
+        height: 100vh;
+        position: fixed !important; /* Force fixed positioning */
+        top: 0;
+        left: 0;
+        transform: none !important;
+        visibility: visible !important;
+        z-index: 1000;
+    }
+
+    /* Push main content to the right */
+    .main-content {
+        margin-left: 260px;
+        width: calc(100% - 260px);
+        min-height: 100vh;
+    }
+}
+
+/* Mobile Adjustments */
+@media (max-width: 991.98px) {
+    .fixed-top {
+        z-index: 1040; /* Just below offcanvas backdrop */
+    }
+    
+    /* Prevent content from hiding behind fixed mobile header */
+    .main-content {
+        padding-top: 60px; 
+    }
+}
+
+/* Common Link Styling */
+.nav-link {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.nav-link:hover:not(.active) {
+    background-color: #f8f9fa;
+    color: #10b981 !important; /* Bootstrap Success Green */
+}
+
+.nav-link.active {
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+}
+
+/* Collapse Arrow Animation */
+.nav-link[aria-expanded="true"] [data-lucide="chevron-down"] {
+    transform: rotate(180deg);
+}
+
+/* Icon consistency */
+[data-lucide] {
+    width: 20px;
+    height: 20px;
+    stroke-width: 2px;
+}
