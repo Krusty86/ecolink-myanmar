@@ -2,11 +2,10 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <c:import url="template/header.jsp"></c:import>
+
 <body>
-<!-- <jsp:include page="template/menuBar.jsp"></jsp:include>
- -->
-  <jsp:include page="sidebar.jsp" />
-  <jsp:include page="${pageContent }"></jsp:include>
+	  <jsp:include page="template/menuBar.jsp"></jsp:include>
+	  <jsp:include page="${pageContent }"></jsp:include>
   
     
 <c:import url="template/footer.jsp"></c:import>

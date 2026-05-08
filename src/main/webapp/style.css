@@ -1,0 +1,116 @@
+/* Ensure the content-offset transition matches the sidebar */
+.content-offset {
+    transition: margin-left var(--transition-speed) ease;
+    min-height: 100vh;
+}
+
+@media (min-width: 768px) {
+    .content-offset {
+        margin-left: var(--sidebar-width);
+        width: calc(100% - var(--sidebar-width));
+    }
+}
+
+@media (max-width: 767.98px) {
+    .content-offset {
+        margin-left: 0;
+        width: 100%;
+    }
+}
+/* Sidebar variable setup /
+:root {
+    --sidebar-width: 260px;
+    --transition-speed: 0.3s;
+}
+
+/ Sidebar Core Styles /
+.sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+    transition: transform var(--transition-speed) ease;
+    background-color: var(--bs-body-bg);
+}
+
+/ Main content moves only on desktop /
+@media (min-width: 768px) {
+    .content-offset {
+        margin-left: var(--sidebar-width);
+    }
+}
+
+/ Mobile Sidebar behavior (starts hidden) /
+@media (max-width: 767.98px) {
+    .sidebar {
+        transform: translateX(-100%);
+    }
+    .sidebar.show {
+        transform: translateX(0);
+    }
+}
+
+/ Hover effects for nav items /
+.nav-link {
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+
+.nav-link:hover {
+    background-color: rgba(var(--bs-primary-rgb), 0.1);
+}
+
+/ Specific Light/Dark Mode tweaks /
+[data-bs-theme="dark"] .sidebar {
+    background-color: #020617; / Tailwind Slate-950 match /
+    border-color: #1e293b !important;
+}
+
+[data-bs-theme="light"] .sidebar {
+    background-color: #ffffff;
+    border-color: #e2e8f0 !important;
+}
+
+/ Custom Primary Button Shadow */
+.btn-primary {
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.card {
+    background-color: var(--card-slate);
+    border-color: var(--border-slate);
+    border-radius: 1rem;
+    color: white;
+}
+
+.golden-time-card {
+    background: linear-gradient(135deg, rgba(120, 60, 0, 0.3) 0%, rgba(120, 60, 0, 0.1) 100%);
+    border: 1px solid rgba(251, 191, 36, 0.3) !important;
+}
+
+.nav-link {
+    color: #94a3b8;
+    border-bottom-width: 3px !important;
+}
+
+.nav-link.active {
+    color: #3b82f6 !important;
+}
+
+.badge {
+    font-weight: 600;
+    padding: 0.5em 0.8em;
+}
+
+.ranking-item {
+    background: rgba(51, 65, 85, 0.4);
+    transition: background 0.2s;
+}
+
+.ranking-item:hover {
+    background: rgba(51, 65, 85, 0.8);
+}
+
+the side bar and overview page are overlapping

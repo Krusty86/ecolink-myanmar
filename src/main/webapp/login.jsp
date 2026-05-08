@@ -1,0 +1,119 @@
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | EcoLink</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <style>
+        body {
+            background-color: #f8fcf9;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+        }
+        .login-card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .btn-success {
+            background-color: #52a675;
+            border: none;
+            padding: 12px;
+            font-weight: 600;
+        }
+        .btn-success:hover {
+            background-color: #438a61;
+        }
+        .form-control {
+            padding: 12px;
+            border-radius: 8px;
+        }
+        .logo-text {
+            color: #52a675;
+            font-weight: 800;
+            letter-spacing: -1px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5">
+                
+                <c:if test="${mode == 'ALERT'}">
+                    <div class="alert alert-warning alert-dismissible fade show mb-4 border-0 shadow-sm" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i> Please login to place an order.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                </c:if>
+                
+                <c:if test="${save}">
+                    <div class="alert alert-success alert-dismissible fade show mb-4 border-0 shadow-sm" role="alert">
+                        <i class="bi bi-check-circle-fill me-2"></i> Account created! You can now log in.
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                </c:if>
+
+                <c:if test="${not empty error}">
+                    <div class="alert alert-danger border-0 shadow-sm">
+                        <i class="bi bi-x-circle-fill me-2"></i> ${error}
+                    </div>
+                </c:if>
+
+                <div class="card login-card p-4">
+                    <div class="text-center mb-4">
+                        <h2 class="logo-text m-0">EcoLink</h2>
+                        <p class="text-muted">Welcome back! Please login.</p>
+                    </div>
+
+                    <form action="login" method="post">
+                        <input type="hidden" name="mode" value="CHECK">
+                        
+                        <div class="mb-3">
+                            <label class="form-label small fw-bold">Email address</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope text-muted"></i></span>
+                                <input type="email" class="form-control bg-light border-start-0" 
+                                       name="email" placeholder="name@example.com" required>
+                            </div>
+                        </div>
+
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold">Password</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-lock text-muted"></i></span>
+                                <input type="password" class="form-control bg-light border-start-0" 
+                                       name="password" placeholder="••••••••" required>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-success w-100 rounded-pill mb-3">
+                            Sign In
+                        </button>
+
+                        <div class="text-center">
+                            <span class="text-muted small">Don't have an account? </span>
+                            <a href="login?mode=REGISTER" class="text-success small fw-bold text-decoration-none">Register here</a>
+                        </div>
+                    </form>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a href="home" class="text-muted small text-decoration-none">
+                        <i class="bi bi-arrow-left me-1"></i> Back to Homepage
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

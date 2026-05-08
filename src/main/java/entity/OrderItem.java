@@ -1,7 +1,4 @@
-package dao;
-
-import entity.Order;
-import entity.Product;
+package entity;
 
 public class OrderItem {
 	private Long id;

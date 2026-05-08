@@ -18,6 +18,7 @@ public class OrderItemDAO {
         // Populate the Product object with details for the UI
         Product product = new Product();
         product.setId(rs.getLong("product_id"));
+        product.setPrice(rs.getBigDecimal("price"));
         product.setName(rs.getString("name"));
         product.setMaterial_type(rs.getString("material_type"));
         product.setQty(rs.getLong("product_qty")); // Current stock qty
@@ -64,9 +65,11 @@ public class OrderItemDAO {
     // 2. Find All items for a specific Order (with Product Details)
     public static List<OrderItem> findByOrderId(Long orderId) {
         List<OrderItem> list = new ArrayList<>();
-        String sql = "SELECT oi.*, p.name, p.material_type, p.qty as product_qty, p.status " +
+        // Added JOIN to product_prices to get the active price
+        String sql = "SELECT oi.*, p.name, p.material_type, p.qty as product_qty, p.status, pp.price " +
                      "FROM order_items oi " +
                      "JOIN products p ON oi.product_id = p.id " +
+                     "LEFT JOIN product_prices pp ON p.id = pp.product_id AND pp.is_current = 1 " +
                      "WHERE oi.order_id = ?";
         
         try (Connection con = DBConnection.connect();

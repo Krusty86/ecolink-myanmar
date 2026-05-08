@@ -3,6 +3,7 @@ package controller;
 import dao.CategoryDAO;
 import dao.*;
 import entity.*;
+import enums.OrderStatus;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -26,23 +27,32 @@ public class AdminDashboardController extends HttpServlet {
     	switch (mode) {
 		case "ORDERS":	showOrders(req, resp);break;
 		case "PRODUCTS": showProducts(req, resp);break;
-		case "BUYERS":	showBuyers(req, resp);break;
-		case "SELLERS":	showSellers(req, resp);break;
+		case "USERS":	showUsers(req, resp);break;
 		case "EDITU": editUserStatus(req, resp);break;
 		case "EDIT_CAT": editCategory(req, resp);break;
 		case "EDITP": editProduct(req, resp);break;
 		case "UPDATE_STATUS": updateProductStatus(req, resp); break;
+		case "EDITO": updateOrderStatus(req, resp); break;
 		default: showAdminDashboard(req, resp);break;
 		}
 
     }
+
+	private void updateOrderStatus(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+		// TODO Auto-generated method stub
+		Long id = Long.parseLong(req.getParameter("id"));
+		String status = req.getParameter("status");
+		if(OrderDAO.updateStatus(id, OrderStatus.valueOf(status))) {
+			resp.sendRedirect("home?mode=ORDERS");
+		}
+	}
 
 	private void editUserStatus(HttpServletRequest req, HttpServletResponse resp) throws IOException {
 		// TODO Auto-generated method stub
 		Long id = Long.parseLong(req.getParameter("id"));
 		Boolean status = Boolean.parseBoolean(req.getParameter("status"));
 		if(UserDAO.updateUserStatus(id, status))
-			resp.sendRedirect("home?mode=SELLERS");
+			resp.sendRedirect("home?mode=USERS");
 	}
 
 	private void updateProductStatus(HttpServletRequest req, HttpServletResponse resp) throws IOException {
@@ -77,23 +87,11 @@ public class AdminDashboardController extends HttpServlet {
 		// --- 1️. Statistic Cards ---
         req.setAttribute("orderCount", OrderDAO.findAll().size());
         req.setAttribute("productCount", ProductDAO.findAllPublished().size());
-        req.setAttribute("userCount", UserDAO.findAllExceptAdmin().size());
+        req.setAttribute("userCount", UserDAO.findAll().size());
 
         // --- 2️. Recent Orders ---
         List<Order> recentOrders = OrderDAO.getRecentOrders(10);
         req.setAttribute("recentOrders", recentOrders);
-
-//        // --- 3️. Orders Per Product (Bar Chart) ---
-//        Map<String, Integer> ordersPerProduct = orderDAO.getOrdersPerProduct();
-//        //key list is the productNames list ${prouductNames}
-//        req.setAttribute("productNames", new ArrayList<>(ordersPerProduct.keySet()));
-//        //value list is the orderCounts => ${orderCounts}
-//        req.setAttribute("orderCounts", new ArrayList<>(ordersPerProduct.values()));
-//
-//        // --- 4️. Order Status Distribution (Pie Chart) ---
-//        Map<String, Integer> statusData = orderDAO.getOrderStatusCounts();
-//        req.setAttribute("statusLabels", new ArrayList<>(statusData.keySet()));
-//        req.setAttribute("statusCounts", new ArrayList<>(statusData.values()));
 
         // --- 5. go to JSP ---
         req.setAttribute("pageTitle", "Admin Dashboard | EcoLink Myanmar");
@@ -101,33 +99,13 @@ public class AdminDashboardController extends HttpServlet {
         req.getRequestDispatcher("/admin-home.jsp").forward(req, resp);
 	}
 
-	private void showSellers(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		List<User> users = UserDAO.findSellers();
-		// --- 1️. Statistic Cards ---
-        req.setAttribute("orderCount", OrderDAO.findAll().size());
-        req.setAttribute("productCount", ProductDAO.findAllPublished().size());
-        req.setAttribute("userCount", UserDAO.findAllExceptAdmin().size());
 
-        
+	private void showUsers(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+		List<User> users = UserDAO.findAll();
+       
 		req.setAttribute("users", users);
-		for(User u: users)
-			System.out.println(u.getJoined_date());
-		req.setAttribute("pageTitle", "Suppliers | EcoLink Myanmar");
-		req.setAttribute("pageContent", "/sellers.jsp");
-		req.getRequestDispatcher("/admin-home.jsp").forward(req, resp);
-	}
-	
-	private void showBuyers(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-		List<User> users = UserDAO.findBuyers();
-		// --- 1️. Statistic Cards ---
-        req.setAttribute("orderCount", OrderDAO.findAll().size());
-        req.setAttribute("productCount", ProductDAO.findAllPublished().size());
-        req.setAttribute("userCount", UserDAO.findAllExceptAdmin().size());
-
-        
-		req.setAttribute("users", users);
-		req.setAttribute("pageTitle", "Customers | EcoLink Myanmar");
-		req.setAttribute("pageContent", "/buyers.jsp");
+		req.setAttribute("pageTitle", "Users | EcoLink Myanmar");
+		req.setAttribute("pageContent", "/users.jsp");
 		req.getRequestDispatcher("/admin-home.jsp").forward(req, resp);
 	}
 
@@ -136,28 +114,17 @@ public class AdminDashboardController extends HttpServlet {
 		List<Product> uproducts = ProductDAO.findAllUnPublished();
 		
 		List<Category> category = CategoryDAO.findAll();
-		// --- 1️. Statistic Cards ---
-		// --- 1️. Statistic Cards ---
-        req.setAttribute("orderCount", OrderDAO.findAll().size());
-        req.setAttribute("productCount", ProductDAO.findAllPublished().size());
-        req.setAttribute("userCount", UserDAO.findAllExceptAdmin().size());
-
+		
         req.setAttribute("categories", category);
 		req.setAttribute("products", products);
 		req.setAttribute("uproducts", uproducts);
 		req.setAttribute("pageTitle", "Products | EcoLink Myanmar");
-		req.setAttribute("pageContent", "/products.jsp");
+		req.setAttribute("pageContent", "/admin-product.jsp");
 		req.getRequestDispatcher("/admin-home.jsp").forward(req, resp);
 	}
 
 	private void showOrders(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		List<Order> orders = OrderDAO.findAll();
-		
-		// --- 1️. Statistic Cards ---
-        req.setAttribute("orderCount", OrderDAO.findAll().size());
-        req.setAttribute("productCount", ProductDAO.findAllPublished().size());
-        req.setAttribute("userCount", UserDAO.findAllExceptAdmin().size());
-
 		req.setAttribute("orders", orders);
 		req.setAttribute("pageTitle", "Orders | EcoLink Myanmar");
 		req.setAttribute("pageContent", "/orders.jsp");

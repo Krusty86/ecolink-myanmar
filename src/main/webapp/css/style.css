@@ -1,0 +1,125 @@
+/* ===== 1. ECO-TECH VARIABLES ===== */
+:root {
+    /* Eco-Friendly Palette (Light Mode Default) */
+    --primary-eco: #198754;       /* Main Forest Green */
+    --primary-hover: #146c43;
+    --bg-main: #f8faf9;           /* Very light mint-gray */
+    --sidebar-bg: #ffffff;
+    --card-bg: #ffffff;
+    --text-main: #1a2e25;         /* Deep leaf green-black */
+    --text-muted: #6c757d;
+    --border-color: rgba(25, 135, 84, 0.12);
+    
+    /* Functional Accents */
+    --accent-mint: #d1e7dd;
+    --status-warning: #ffc107;
+    --status-danger: #dc3545;
+    
+    /* Layout */
+    --sidebar-width: 260px;
+}
+
+/* ===== 2. GLOBAL STYLES ===== */
+body { 
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    transition: background 0.3s ease, color 0.3s ease;
+    overflow-x: hidden;
+    margin: 0;
+}
+
+/* ===== 3. SIDEBAR STRUCTURE ===== */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: var(--sidebar-width);
+    background-color: var(--sidebar-bg) !important;
+    border-right: 1px solid var(--border-color) !important;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1050;
+    overflow-x: hidden !important;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Sidebar Nav Elements */
+.sidebar .nav-link {
+    color: var(--text-muted);
+    font-weight: 600;
+    padding: 12px 20px;
+    border-radius: 12px;
+    margin: 4px 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.25s;
+}
+
+.sidebar .nav-link i {
+    font-size: 1.1rem;
+}
+
+.sidebar .nav-link:hover {
+    color: var(--primary-eco);
+    background: var(--accent-mint);
+}
+
+.sidebar .nav-link.active {
+    background-color: var(--primary-eco) !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(25, 135, 84, 0.25);
+}
+
+/* Login/Profile section at bottom */
+.login-section {
+    padding: 20px;
+    border-top: 1px solid var(--border-color);
+    margin-top: auto;
+    background: rgba(25, 135, 84, 0.03);
+}
+
+/* ===== 4. CONTENT & LAYOUT ===== */
+.content-offset {
+    transition: all 0.3s ease;
+    min-height: 100vh;
+}
+
+/* Glassmorphism Cards */
+.eco-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
+}
+
+/* ===== 5. RESPONSIVENESS ===== */
+@media (min-width: 769px) {
+    .content-offset {
+        margin-left: var(--sidebar-width);
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar { transform: translateX(-100%); }
+    .sidebar.expanded {
+        transform: translateX(0);
+        box-shadow: 15px 0 35px rgba(0,0,0,0.1);
+    }
+    .content-offset { margin-left: 0 !important; }
+}
+
+#backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.3);
+    backdrop-filter: blur(4px);
+    z-index: 1040;
+    display: none;
+}
+#backdrop.show { display: block; }

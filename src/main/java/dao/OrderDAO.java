@@ -10,6 +10,29 @@ import util.DBConnection;
 
 public class OrderDAO {
 
+	// 7. Find a Single Order by ID with User and Address details
+	public static Order findById(Long id) {
+	    String sql = "SELECT o.*, u.username, a.label, a.street, a.township, a.city, a.address_type " +
+	                 "FROM orders o " +
+	                 "JOIN users u ON o.buyer_id = u.id " +
+	                 "JOIN addresses a ON o.shipping_address_id = a.id " +
+	                 "WHERE o.id = ?";
+	    
+	    try (Connection con = DBConnection.connect();
+	         PreparedStatement ps = con.prepareStatement(sql)) {
+	        
+	        ps.setLong(1, id);
+	        ResultSet rs = ps.executeQuery();
+	        
+	        if (rs.next()) {
+	            return mapOrder(rs); // Reusing your existing mapOrder helper
+	        }
+	    } catch (Exception e) {
+	        System.err.println("Error finding order by ID: " + e.getMessage());
+	        e.printStackTrace();
+	    }
+	    return null;
+	}
     // Helper to map ResultSet to a fully populated Order object
     private static Order mapOrder(ResultSet rs) throws Exception {
         // Populate User
@@ -30,7 +53,7 @@ public class OrderDAO {
             rs.getLong("id"),
             user,
             addr,
-            rs.getInt("total_amount"),
+            rs.getBigDecimal("total_amount"),
             OrderStatus.valueOf(rs.getString("status")),
             rs.getTimestamp("order_date"),
             rs.getLong("points_spent"),
@@ -46,7 +69,7 @@ public class OrderDAO {
             
             ps.setLong(1, order.getUser().getId());
             ps.setLong(2, order.getAddress().getId());
-            ps.setInt(3, order.getTotal_amount());
+            ps.setBigDecimal(3, order.getTotal_amount());
             ps.setString(4, order.getStatus().name());
             ps.setTimestamp(5, new Timestamp(order.getOrder_date().getTime()));
             ps.setLong(6, order.getPoints_spent());
@@ -123,7 +146,7 @@ public class OrderDAO {
         try (Connection con = DBConnection.connect();
              PreparedStatement ps = con.prepareStatement(sql)) {
             ps.setLong(1, order.getAddress().getId());
-            ps.setInt(2, order.getTotal_amount());
+            ps.setBigDecimal(2, order.getTotal_amount());
             ps.setString(3, order.getStatus().name());
             ps.setLong(4, order.getPoints_spent());
             ps.setBigDecimal(5, order.getDiscount_amount_from_points());

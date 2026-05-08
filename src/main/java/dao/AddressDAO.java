@@ -28,7 +28,7 @@ public class AddressDAO {
     }
 
     // 1. Save Address
-    public static Address save(Address address) {
+    public static boolean save(Address address) {
         String sql = "INSERT INTO addresses (user_id, label, street, township, city, is_default, address_type) VALUES (?,?,?,?,?,?,?)";
         try (Connection con = DBConnection.connect();
              PreparedStatement ps = con.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -44,13 +44,13 @@ public class AddressDAO {
             if (ps.executeUpdate() > 0) {
                 ResultSet rs = ps.getGeneratedKeys();
                 if (rs.next()) address.setId(rs.getLong(1));
-                return address;
+                return true;
             }
         } catch (SQLException e) { e.printStackTrace(); } catch (Exception e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-        return null;
+        return false;
     }
 
     // 2. Find All Addresses for a specific User
@@ -136,5 +136,46 @@ public class AddressDAO {
             ps.setLong(1, id);
             return ps.executeUpdate() > 0;
         } catch (Exception e) { e.printStackTrace(); return false; }
+    }
+    
+    public static Address findDefaultByUserId(Long userId) {
+        String sql = "SELECT * FROM addresses WHERE user_id = ? AND is_default = true LIMIT 1";
+        
+        try (Connection con = DBConnection.connect();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            
+            ps.setLong(1, userId);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                return mapAddress(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        return null;
+    }
+    
+    
+    public static Address findById(Long id) {
+        String sql = "SELECT * FROM addresses WHERE id = ?";
+        
+        try (Connection con = DBConnection.connect();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            
+            ps.setLong(1, id);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                return mapAddress(rs); 
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        return null;
     }
 }

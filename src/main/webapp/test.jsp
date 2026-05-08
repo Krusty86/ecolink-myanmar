@@ -45,4 +45,4 @@
     </div>
 </aside>
 
-<link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
+<link rel="stylesheet" href="${pageContext.request.contextPath}/css/admin-style.css">

@@ -6,7 +6,6 @@ import enums.ProductStatus;
 
 public class Product {
 	private Long id;
-	private User user;	// for supplier id
 	private Category category;
 	private String name, material_type;
 	private BigDecimal plastic_saved_per_unit;
@@ -14,10 +13,9 @@ public class Product {
 	private Long qty;
 	private BigDecimal price;
 	
-	public Product(User user, Category category, String name, String material_type, BigDecimal plastic_saved_per_unit,
+	public Product(Category category, String name, String material_type, BigDecimal plastic_saved_per_unit,
 			ProductStatus status, Long qty, BigDecimal price) {
-		super();
-		this.user = user;
+		
 		this.category = category;
 		this.name = name;
 		this.material_type = material_type;
@@ -29,7 +27,7 @@ public class Product {
 
 	public Product(Long id, String name, String material_type, BigDecimal plastic_saved_per_unit, Long qty,
 			BigDecimal price) {
-		super();
+	
 		this.id = id;
 		this.name = name;
 		this.material_type = material_type;
@@ -38,11 +36,10 @@ public class Product {
 		this.price = price;
 	}
 
-	public Product(Long id, User user, Category category, String name, String material_type,
+	public Product(Long id, Category category, String name, String material_type,
 			BigDecimal plastic_saved_per_unit, ProductStatus status, Long qty, BigDecimal price) {
 		super();
 		this.id = id;
-		this.user = user;
 		this.category = category;
 		this.name = name;
 		this.material_type = material_type;
@@ -64,10 +61,9 @@ public class Product {
 		// TODO Auto-generated constructor stub
 	}
 	
-	public Product(User user, Category category, String name, String material_type, BigDecimal plastic_saved_per_unit,
+	public Product(Category category, String name, String material_type, BigDecimal plastic_saved_per_unit,
 			ProductStatus status, Long qty) {
 	
-		this.user = user;
 		this.category = category;
 		this.name = name;
 		this.material_type = material_type;
@@ -76,11 +72,10 @@ public class Product {
 		this.qty = qty;
 	}
 
-	public Product(Long id, User user, Category category, String name, String material_type,
+	public Product(Long id, Category category, String name, String material_type,
 			BigDecimal plastic_saved_per_unit, ProductStatus status, Long qty) {
 	
 		this.id = id;
-		this.user = user;
 		this.category = category;
 		this.name = name;
 		this.material_type = material_type;
@@ -103,12 +98,7 @@ public class Product {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public User getUser() {
-		return user;
-	}
-	public void setUser(User user) {
-		this.user = user;
-	}
+	
 	public Category getCategory() {
 		return category;
 	}

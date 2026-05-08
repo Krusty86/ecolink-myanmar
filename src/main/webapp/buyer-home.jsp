@@ -1,6 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 
     <header class="hero-section">
@@ -37,7 +36,7 @@
 
     <section class="bg-light py-5 border-top border-bottom">
         <div class="container py-4">
-            <h2 class="text-center fw-bold mb-5">Why Choose Us?</h2>
+            <h2 class="text-center fw-bold mb-5">Why Choose EcoShop?</h2>
             <div class="row text-center g-4">
                 <div class="col-md-4">
                     <div class="feature-icon"><i class="bi bi-leaf-fill fs-3"></i></div>
@@ -57,3 +56,10 @@
             </div>
         </div>
     </section>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

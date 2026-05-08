@@ -9,7 +9,7 @@ public class Order {
 	private Long id;
 	private User user;	// buyer id
 	private Address address; // shipping address id
-	private Integer total_amount;
+	private BigDecimal total_amount;
 	private OrderStatus status;
 	private Date order_date;
 	private Long points_spent;
@@ -17,7 +17,7 @@ public class Order {
 	public Order() {
 		// TODO Auto-generated constructor stub
 	}
-	public Order(Long id, User user, Address address, Integer total_amount, OrderStatus status,
+	public Order(Long id, User user, Address address, BigDecimal total_amount, OrderStatus status,
 			Date order_date, Long points_spent, BigDecimal discount_amount_from_points) {
 		this.id = id;
 		this.user = user;
@@ -28,7 +28,7 @@ public class Order {
 		this.points_spent = points_spent;
 		this.discount_amount_from_points = discount_amount_from_points;
 	}
-	public Order(User user, Address address, Integer total_amount, OrderStatus status, Date order_date,
+	public Order(User user, Address address, BigDecimal total_amount, OrderStatus status, Date order_date,
 			Long points_spent, BigDecimal discount_amount_from_points) {
 		this.user = user;
 		this.address = address;
@@ -56,10 +56,10 @@ public class Order {
 	public void setAddress(Address address) {
 		this.address = address;
 	}
-	public Integer getTotal_amount() {
+	public BigDecimal getTotal_amount() {
 		return total_amount;
 	}
-	public void setTotal_amount(Integer total_amount) {
+	public void setTotal_amount(BigDecimal total_amount) {
 		this.total_amount = total_amount;
 	}
 	public OrderStatus getStatus() {
