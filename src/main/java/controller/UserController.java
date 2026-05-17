@@ -12,6 +12,7 @@ import jakarta.servlet.http.HttpSession;
 import dao.AddressDAO;
 import dao.UserDAO;
 import entity.Address;
+import entity.ImpactLog;
 import entity.User;
 import enums.AddressType;
 
@@ -39,13 +40,46 @@ public class UserController extends HttpServlet {
             case "SAVEADDRESS":
             	saveAddress(req, resp);
             	break;
+            case "ADDDEFAULT":
+            	setDefaultAddress(req, resp);
+            	break;
+            case "DELETEADDRESS":
+                deleteAddress(req, resp);
+                break;
             default:
                 showProfile(req, resp);
                 break;
         }
     }
 
- // --- Mode: EDIT (Show the update form) ---
+    private void deleteAddress(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        User user = getAuthenticatedUser(req, resp);
+        if (user == null) return;
+
+        try {
+            String idStr = req.getParameter("aid");
+            
+            if (idStr != null) {
+                Long addressId = Long.parseLong(idStr);
+                boolean success = AddressDAO.delete(addressId);
+                
+                if (success) {
+                    resp.sendRedirect("profile?mode=ADDRESS&msg=deleted");
+                } else {
+                    resp.sendRedirect("profile?mode=ADDRESS&error=delete_failed");
+                }
+            } else {
+                resp.sendRedirect("profile?mode=ADDRESS&error=missing_id");
+            }
+            
+        } catch (NumberFormatException e) {
+            resp.sendRedirect("profile?mode=ADDRESS&error=invalid_id");
+        } catch (Exception e) {
+            e.printStackTrace();
+            resp.sendRedirect("profile?mode=ADDRESS&error=process_failed");
+        }
+    }
+    // --- Mode: EDIT (Show the update form) ---
     private void showEditForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = getAuthenticatedUser(req, resp);
         if (user == null) return;
@@ -98,13 +132,13 @@ public class UserController extends HttpServlet {
     private void showProfile(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         User user = getAuthenticatedUser(req, resp);
         if (user == null) return;
-
-        // Refresh user data (loyalty points, etc.)
+        ImpactLog useril = UserDAO.getPlasticImpactByUserId(user.getId());
         User updatedUser = UserDAO.findById(user.getId());
         if (updatedUser != null) {
             req.getSession().setAttribute("loginUser", updatedUser);
         }
-
+        
+        req.setAttribute("impact", useril);
         req.setAttribute("pageTitle", "My Profile | EcoLink");
         req.setAttribute("pageContent", "profile.jsp");
         req.getRequestDispatcher("layout.jsp").forward(req, resp);
@@ -115,7 +149,6 @@ public class UserController extends HttpServlet {
         User user = getAuthenticatedUser(req, resp);
         if (user == null) return;
 
-        // Fetch all addresses for this user
         List<Address> addressList = AddressDAO.findAllByUser(user.getId());
         
         req.setAttribute("addresses", addressList);
@@ -125,7 +158,6 @@ public class UserController extends HttpServlet {
         req.getRequestDispatcher("layout.jsp").forward(req, resp);
     }
 
-    // Helper to check session and return user
     private User getAuthenticatedUser(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         HttpSession session = req.getSession(false);
         User user = (session != null) ? (User) session.getAttribute("loginUser") : null;
@@ -136,12 +168,30 @@ public class UserController extends HttpServlet {
         return user;
     }
 
+    private void setDefaultAddress(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        User user = getAuthenticatedUser(req, resp);
+        if (user == null) return;
+
+        try {
+            Long addressId = Long.parseLong(req.getParameter("aid"));
+
+            boolean success = AddressDAO.updateDefault(user.getId(), addressId);
+
+            if (success) {
+                resp.sendRedirect("profile?mode=ADDRESS&msg=default_updated");
+            } else {
+                resp.sendRedirect("profile?mode=ADDRESS&error=update_failed");
+            }
+        } catch (Exception e) {
+            resp.sendRedirect("profile?mode=ADDRESS&error=invalid_id");
+        }
+    }
 private void saveAddress(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
     User user = getAuthenticatedUser(req, resp);
     if (user == null) return;
 
     try {
-        // 1. Extract raw data from form
+        // extract data from form
         String label = req.getParameter("label");
         String street = req.getParameter("street");
         String township = req.getParameter("township");
@@ -149,7 +199,7 @@ private void saveAddress(HttpServletRequest req, HttpServletResponse resp) throw
         String typeStr = req.getParameter("type"); // Comes as "HOME", "WORK", or "OTHER"
         boolean isDefault = "true".equals(req.getParameter("isDefault"));
 
-        // 2. Map to Entity
+        // add it into address object
         Address addr = new Address();
         addr.setUser(user);
         addr.setLabel(label);
@@ -159,24 +209,23 @@ private void saveAddress(HttpServletRequest req, HttpServletResponse resp) throw
         addr.setIs_default(isDefault);
 
         // --- ENUM CONVERSION ---
-        // Converts the String "HOME" into AddressType.HOME
         if (typeStr != null) {
             addr.setAddress_type(AddressType.valueOf(typeStr.toUpperCase()));
         }
 
-        // 3. Database Persistence
-        // Note: If isDefault is true, your DAO should handle unsetting 
-        // other defaults before saving this one.
-        boolean success = AddressDAO.save(addr);
+       boolean success = AddressDAO.save(addr);
 
-        if (success) {
-            resp.sendRedirect("profile?mode=ADDRESS&msg=saved");
-        } else {
-            resp.sendRedirect("profile?mode=ADDRESS&error=db_failed");
-        }
+       if (success) {
+           if (isDefault) {
+               AddressDAO.updateDefault(user.getId(), addr.getId());
+           }
+           resp.sendRedirect("profile?mode=ADDRESS&msg=saved");
+       } else {
+           resp.sendRedirect("profile?mode=ADDRESS&error=db_failed");
+       }
         
     } catch (IllegalArgumentException e) {
-        // This catches if the Enum value doesn't match
+        
         resp.sendRedirect("profile?mode=ADDRESS&error=invalid_type");
     } catch (Exception e) {
         e.printStackTrace();
@@ -185,9 +234,6 @@ private void saveAddress(HttpServletRequest req, HttpServletResponse resp) throw
 }
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        // Handle address actions like SAVE or SET_DEFAULT
-        
-        
         doGet(req, resp);
     }
 }

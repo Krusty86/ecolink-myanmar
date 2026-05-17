@@ -138,6 +138,7 @@ public class AddressDAO {
         } catch (Exception e) { e.printStackTrace(); return false; }
     }
     
+    // 6. Find User Default Address
     public static Address findDefaultByUserId(Long userId) {
         String sql = "SELECT * FROM addresses WHERE user_id = ? AND is_default = true LIMIT 1";
         
@@ -158,7 +159,7 @@ public class AddressDAO {
         return null;
     }
     
-    
+   // 7. Find User Address
     public static Address findById(Long id) {
         String sql = "SELECT * FROM addresses WHERE id = ?";
         

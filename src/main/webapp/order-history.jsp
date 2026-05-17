@@ -69,7 +69,6 @@
                                         </span>
                                     </td>
                                     <td>
-                                        <%-- FIXED: Added .name() to Enum comparison to avoid Coercion Exception --%>
                                         <c:set var="statusClass" value="bg-secondary"/>
                                         <c:choose>
                                             <c:when test="${order.status.name() == 'PENDING'}">

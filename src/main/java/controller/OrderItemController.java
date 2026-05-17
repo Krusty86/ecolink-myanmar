@@ -1,21 +1,16 @@
 package controller;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.util.Optional;
+import java.math.*;
+import java.util.*;
 import dao.*;
 import entity.*;
-import enums.OrderStatus;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
 @WebServlet("/order-items")
 public class OrderItemController extends HttpServlet {
-    private final OrderDAO orderDAO = new OrderDAO();
-    private final OrderItemDAO orderItemDAO = new OrderItemDAO();
-    private final ProductDAO productDAO = new ProductDAO();
-
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String mode = req.getParameter("mode");
@@ -29,34 +24,24 @@ public class OrderItemController extends HttpServlet {
         Integer qty = Integer.parseInt(req.getParameter("qty"));
         Long oid = Long.parseLong(req.getParameter("oid"));
 
-        Optional<Product> productOpt = Optional.ofNullable(productDAO.findById(pid));
-        Order order = orderDAO.findById(oid);
+        Optional<Product> productOpt = Optional.ofNullable(ProductDAO.findById(pid));
+        Order order = OrderDAO.findById(oid);
 
         if (productOpt.isPresent() && order != null) {
             Product p = productOpt.get();
             
-            // 1. Save the item
-            java.util.List<OrderItem> items = new java.util.ArrayList<>();
-            // Note: Assuming your OrderItem constructor or entity now accepts BigDecimal for price
+            List<OrderItem> items = new ArrayList<>();
             items.add(new OrderItem(null, order, p, qty.longValue()));
-            orderItemDAO.saveAll(items);
+            OrderItemDAO.saveAll(items);
 
-            // 2. Update Order Totals using BigDecimal Math
-            // Subtotal = Price * Quantity
-            BigDecimal unitPrice = p.getPrice(); // This is a BigDecimal
+            BigDecimal unitPrice = p.getPrice(); 
             BigDecimal quantity = new BigDecimal(qty);
             BigDecimal subTotal = unitPrice.multiply(quantity);
-
-            // New Total = Current Total + Subtotal
-            // order.getTotal_amount() must return a BigDecimal
             BigDecimal currentTotal = order.getTotal_amount() != null ? order.getTotal_amount() : BigDecimal.ZERO;
             BigDecimal newTotal = currentTotal.add(subTotal);
+            order.setTotal_amount(newTotal.setScale(0, RoundingMode.HALF_UP));
             
-            // Optional: Scale to 0 decimal places for MMK (e.g., 1500.00 -> 1500)
-            order.setTotal_amount(newTotal.setScale(0, java.math.RoundingMode.HALF_UP));
-            
-            // 3. Persist change to Database
-            orderDAO.update(oid, order); 
+            OrderDAO.update(oid, order); 
             
             resp.sendRedirect("orders?mode=VIEW&oid=" + oid);
         } else {

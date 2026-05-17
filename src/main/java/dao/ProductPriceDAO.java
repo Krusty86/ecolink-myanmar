@@ -40,7 +40,7 @@ public class ProductPriceDAO {
                 pp.setPrice(rs.getBigDecimal("price"));
                 pp.setEffective_date(rs.getTimestamp("effective_date"));
                 pp.setIs_current(rs.getBoolean("is_current"));
-                pp.setProduct(filter.getProduct()); // reuse product object
+                pp.setProduct(filter.getProduct()); 
                 list.add(pp);
             }
         } catch (Exception e) { e.printStackTrace(); }

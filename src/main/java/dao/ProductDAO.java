@@ -10,7 +10,6 @@ import util.DBConnection;
 
 public class ProductDAO {
 
-    // Helper: Map Product WITHOUT User
     private static Product mapFullProduct(ResultSet rs) throws SQLException {
 
         Category cat = new Category();

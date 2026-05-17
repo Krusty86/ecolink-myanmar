@@ -26,8 +26,12 @@
                                         <c:forEach var="item" items="${sessionScope.cart.items}">
                                             <tr>
                                                 <td class="ps-4">
+                                                	<a href="products?mode=VIEWDETAIL&id=${item.product.id}" class="text-decoration-none">
+                                                
                                                     <div class="fw-bold text-dark">${item.product.name}</div>
                                                     <small class="text-muted">${item.product.category.name}</small>
+                                                    </a>
+                                                
                                                 </td>
                                                 <td>${item.product.price} MMK</td>
                                                 <td>
@@ -63,13 +67,14 @@
             </div>
         </div>
 
-        <%-- Summary Sidebar --%>
+        <!-- Summary Sidebar -->
 <c:if test="${not empty sessionScope.cart.items}">
     <div class="col-lg-4">
         <form action="orders?mode=CHECKOUT" method="POST"> <div class="card border-0 shadow-sm rounded-3">
                 <div class="card-body p-4">
                     <h5 class="fw-bold mb-4">Order Summary</h5>
-                    <%-- ADDRESS SELECTION SECTION --%>
+                    
+                    <!--  Address Section -->
 <div class="bg-light p-3 rounded-3 mb-3">
     <div class="d-flex align-items-center mb-2">
         <i class="bi bi-geo-alt-fill text-danger me-2"></i>
@@ -99,7 +104,7 @@
         </c:otherwise>
     </c:choose>
 </div>
-                    <%-- LOYALTY POINTS SECTION --%>
+                   <!-- Loyalty Points Section -->
                     <div class="bg-light p-3 rounded-3 mb-3">
                         <div class="d-flex align-items-center mb-2">
                             <i class="bi bi-star-fill text-warning me-2"></i>
@@ -144,7 +149,7 @@
             </div>
         </form>
         
-        <%-- Eco Tip --%>
+      	<!-- Some tips -->
         <div class="card bg-success text-white border-0 rounded-3 mt-3 shadow-sm">
             <div class="card-body">
                 <small><i class="bi bi-leaf me-2"></i>Did you know?</small>

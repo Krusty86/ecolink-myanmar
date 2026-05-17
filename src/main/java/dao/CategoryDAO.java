@@ -67,7 +67,7 @@ public class CategoryDAO {
             return ps.executeUpdate() > 0;
             
         } catch (Exception e) {
-            // Note: Will fail if products are still linked to this category
+            //  fail if products are still linked to this category
             e.printStackTrace();
             return false;
         }
@@ -84,7 +84,7 @@ public class CategoryDAO {
             ps.setLong(3, id);
             
             if (ps.executeUpdate() > 0) {
-                category.setId(id); // Ensure the ID is set in the returned object
+                category.setId(id); 
                 return category;
             }
         } catch (Exception e) {

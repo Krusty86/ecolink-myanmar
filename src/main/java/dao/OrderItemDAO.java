@@ -11,11 +11,10 @@ public class OrderItemDAO {
 
     // Helper to map ResultSet to OrderItem with joined Product data
     private static OrderItem mapOrderItem(ResultSet rs) throws Exception {
-        // We only need the Order ID for the reference
         Order order = new Order();
         order.setId(rs.getLong("order_id"));
 
-        // Populate the Product object with details for the UI
+
         Product product = new Product();
         product.setId(rs.getLong("product_id"));
         product.setPrice(rs.getBigDecimal("price"));
@@ -65,7 +64,7 @@ public class OrderItemDAO {
     // 2. Find All items for a specific Order (with Product Details)
     public static List<OrderItem> findByOrderId(Long orderId) {
         List<OrderItem> list = new ArrayList<>();
-        // Added JOIN to product_prices to get the active price
+
         String sql = "SELECT oi.*, p.name, p.material_type, p.qty as product_qty, p.status, pp.price " +
                      "FROM order_items oi " +
                      "JOIN products p ON oi.product_id = p.id " +

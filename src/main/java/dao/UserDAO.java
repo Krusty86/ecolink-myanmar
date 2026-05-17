@@ -4,6 +4,7 @@ import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import entity.ImpactLog;
 import entity.User;
 import util.DBConnection;
 
@@ -37,8 +38,6 @@ public class UserDAO {
     }
  // ================= UPDATE USER PROFILE =================
     public static boolean update(User user) {
-        // We update username, email, and password. 
-        // We keep status, role, and joined_date unchanged here for security.
         String sql = "UPDATE users SET username = ?, email = ?, password = ? WHERE id = ?";
 
         try (Connection con = DBConnection.connect();
@@ -217,7 +216,41 @@ public class UserDAO {
 
         return map;
     }
+    
+    public static ImpactLog getPlasticImpactByUserId(Long userId) {
+        String sql = "SELECT * FROM impact_logs WHERE user_id = ?";
+        
+        try (Connection con = DBConnection.connect();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            
+            ps.setLong(1, userId);
+            
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return mapImpactLog(rs);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
 
+    // ================= IMPACT LOG MAPPER =================
+    private static ImpactLog mapImpactLog(ResultSet rs) throws SQLException {
+        ImpactLog log = new ImpactLog();
+        
+        log.setId(rs.getLong("id"));
+        log.setTotal_plastic_saved(rs.getInt("total_plastic_saved"));
+        log.setTotal_orders(rs.getInt("total_orders"));
+        log.setLast_updated(rs.getTimestamp("last_updated"));
+        
+        Long userId = rs.getLong("user_id");
+        log.setUser(findById(userId)); 
+        
+        return log;
+    }
+    
     // ================= MAPPER =================
     private static User mapUser(ResultSet rs) throws SQLException {
 

@@ -32,7 +32,6 @@
             border-radius: 12px;
             margin: 0 auto 1.5rem;
         }
-        /* Floating label adjustment for icons */
         .form-floating > .form-control {
             padding-left: 3rem;
         }

@@ -89,6 +89,16 @@
         </div>
     </div>
 
+<div class="row mb-4">
+    <div class="col-md-6">
+        <div class="input-group bg-white shadow-sm rounded-pill p-1 overflow-hidden border">
+            <span class="input-group-text bg-white border-0 ps-3">
+                <i class="bi bi-search text-success"></i>
+            </span>
+            <input type="text" id="inventorySearch" class="form-control border-0 shadow-none" placeholder="Search products by name, ID, or material...">
+        </div>
+    </div>
+</div>
     <ul class="nav nav-pills mb-4 bg-white p-2 rounded-pill shadow-sm d-inline-flex" id="adminTab" role="tablist">
         <li class="nav-item" role="presentation">
             <button class="nav-link active rounded-pill px-4" id="list-tab" data-bs-toggle="tab" data-bs-target="#pLst" type="button">
@@ -762,6 +772,39 @@ document.addEventListener("DOMContentLoaded", function() {
 
         });
 
+    });
+    const searchInput = document.getElementById('inventorySearch');
+    const tableBody = document.querySelector("#pLst table tbody");
+    const rows = tableBody.getElementsByTagName('tr');
+
+    searchInput.addEventListener('keyup', function() {
+        const filter = searchInput.value.toLowerCase();
+        let resultsFound = false;
+
+        for (let i = 0; i < rows.length; i++) {
+            // Get text from the Product Name and Material/ID div
+            const textContent = rows[i].textContent.toLowerCase();
+            
+            if (textContent.includes(filter)) {
+                rows[i].style.display = "";
+                resultsFound = true;
+            } else {
+                rows[i].style.display = "none";
+            }
+        }
+
+        // Optional: Show "No results" if nothing matches
+        const existingNoResults = document.getElementById('noResultsRow');
+        if (!resultsFound) {
+            if (!existingNoResults) {
+                const noResultsRow = document.createElement('tr');
+                noResultsRow.id = 'noResultsRow';
+                noResultsRow.innerHTML = `<td colspan="5" class="text-center py-4 text-muted">No products match "${searchInput.value}"</td>`;
+                tableBody.appendChild(noResultsRow);
+            }
+        } else if (existingNoResults) {
+            existingNoResults.remove();
+        }
     });
 });
 

@@ -30,7 +30,7 @@
                         <div class="col-md-6">
                             <label class="form-label text-muted small fw-bold text-uppercase">Email Address</label>
                             <input type="email" name="email" class="form-control form-control-lg border-0 bg-light" 
-                                   value="${loginUser.email}" required>
+                                   value="${loginUser.email}" required readOnly>
                         </div>
 
                         <hr class="my-4 opacity-25">

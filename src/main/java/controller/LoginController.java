@@ -16,8 +16,6 @@ import jakarta.servlet.http.*;
 
 @WebServlet("/login")
 public class LoginController extends HttpServlet {
-    private final UserDAO userDAO = new UserDAO();
-    private final ProductDAO productDAO = new ProductDAO();
    
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -46,33 +44,26 @@ public class LoginController extends HttpServlet {
         }
     }
 
- // 1. DISPLAYS THE REGISTRATION PAGE
     private void showRegisterForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-//        req.setAttribute("pageTitle", "Register | EcoLink");
-//        req.setAttribute("pageContent", "register.jsp"); // The JSP we created earlier
-        req.getRequestDispatcher("register.jsp").forward(req, resp);
+    	// user register
+    	req.getRequestDispatcher("register.jsp").forward(req, resp);
     }
 
-    // 2. PROCESSES THE FORM SUBMISSION
     private void registerUser(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String username = req.getParameter("username");
         String email = req.getParameter("email");
         String password = req.getParameter("password");
 
-        // Create User Object
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setEmail(email);
         newUser.setPassword(password);
-        newUser.setRole("CUSTOMER"); // Default role for web registration
+        newUser.setRole("CUSTOMER"); // default role for user
         newUser.setStatus(true);
 
         try {
-            // Call your DAO to save to database
-            boolean isSaved = userDAO.save(newUser); 
-
+            boolean isSaved = UserDAO.save(newUser); 
             if (isSaved) {
-                // Redirect to login with a success message
                 req.setAttribute("save", true);
                 showLoginForm(req, resp);
             } else {
@@ -112,15 +103,14 @@ public class LoginController extends HttpServlet {
                 if (session.getAttribute("cart") == null) {
                     session.setAttribute("cart", new Cart());
                 }
-                // Redirect to homepage for buyers
                 resp.sendRedirect("home");
             } 
             else if ("ADMIN".equals(user.getRole())) {
                 // Redirect to admin dashboard
+            	System.out.println("Inside Admin Role Confirmed");
                 resp.sendRedirect("home?mode=DASHBOARD");
             } 
             else {
-                // Default fallback
                 resp.sendRedirect("home");
             }
         }
@@ -131,9 +121,6 @@ public class LoginController extends HttpServlet {
         if (alertMode != null) {
             req.setAttribute("mode", alertMode);
         }
-        
-//        req.setAttribute("pageTitle", "Login | EcoLink");
-//        req.setAttribute("pageContent", "login.jsp");
         req.getRequestDispatcher("login.jsp").forward(req, resp);
     }
 

@@ -27,8 +27,23 @@
     </div>
 
     <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="card-header bg-white py-3 border-0">
+        <div class="row align-items-center">
+            <div class="col">
+                <h5 class="fw-bold mb-0 text-success">Member Directory</h5>
+            </div>
+            <div class="col-md-4">
+                <div class="input-group bg-light rounded-pill px-3 py-1 border">
+                    <span class="input-group-text bg-transparent border-0">
+                        <i class="bi bi-search text-success"></i>
+                    </span>
+                    <input type="text" id="userSearch" class="form-control bg-transparent border-0 shadow-none small" placeholder="Search username, email or role...">
+                </div>
+            </div>
+        </div>
+    </div>
         <div class="table-responsive">
-            <table class="table table-hover align-middle mb-0">
+            <table class="table  table-hover align-middle mb-0">
                 <thead class="bg-light">
                     <tr class="text-muted small fw-bold">
                         <th class="ps-4">USER PROFILE</th>
@@ -226,8 +241,7 @@ document.addEventListener("DOMContentLoaded", function() {
     document.querySelectorAll(".viewUserBtn").forEach(btn => {
         btn.addEventListener("click", function() {
             const d = this.closest('tr').querySelector('.editUserBtn').dataset; 
-            // We pull some data from the editBtn to avoid duplicate dataset naming
-            
+             
             const points = this.dataset.points;
             const id = this.dataset.id;
             const row = this.closest('tr');
@@ -253,5 +267,44 @@ document.addEventListener("DOMContentLoaded", function() {
             }
         });
     });
+        // --- User Search Logic ---
+        const userSearch = document.getElementById('userSearch');
+        const tableBody = document.querySelector("table tbody");
+        const rows = tableBody.getElementsByTagName('tr');
+
+        userSearch.addEventListener('keyup', function() {
+            const query = userSearch.value.toLowerCase();
+            let found = false;
+
+            for (let row of rows) {
+                // Ignore the "No Results" row if it exists
+                if (row.id === 'noUserResults') continue;
+
+                const text = row.textContent.toLowerCase();
+                if (text.includes(query)) {
+                    row.style.setProperty('display', '', 'important');
+                    found = true;
+                } else {
+                    row.style.setProperty('display', 'none', 'important');
+                }
+            }
+
+            // Show a "No users found" message if the search is empty
+            let emptyMsg = document.getElementById('noUserResults');
+            if (!found) {
+                if (!emptyMsg) {
+                    emptyMsg = document.createElement('tr');
+                    emptyMsg.id = 'noUserResults';
+                    emptyMsg.innerHTML = `
+                        <td colspan="6" class="text-center py-5 text-muted">
+                            <i class="bi bi-person-x fs-2 d-block mb-2"></i>
+                            No community members match "${userSearch.value}"
+                        </td>`;
+                    tableBody.appendChild(emptyMsg);
+                }
+            } else if (emptyMsg) {
+                emptyMsg.remove();
+            }
+        });
 });
 </script>

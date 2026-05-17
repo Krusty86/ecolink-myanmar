@@ -29,7 +29,7 @@ public class ProductImageController extends HttpServlet {
         try {
             // 1. Get Product ID and optional Image ID (for updates)
             String prodIdStr = req.getParameter("productId");
-            String imgIdStr = req.getParameter("imageId"); // Optional: if we are replacing a specific image
+            String imgIdStr = req.getParameter("imageId"); 
             
             if (prodIdStr == null) {
                 resp.sendRedirect("admin/dashboard?mode=PRODUCTS&error=no_product");
@@ -47,7 +47,7 @@ public class ProductImageController extends HttpServlet {
             // Clean filename to avoid path traversal issues
             String fileName = System.currentTimeMillis() + "_" + Path.of(filePart.getSubmittedFileName()).getFileName().toString();
 
-            // 3. Setup File Path (EcoLink Myanmar path)
+            // 3. Setup File Path 
             String uploadDir = "D:\\HMI Batch 5\\Year II\\Java EE\\JavaEE_WS\\ecolink-myanmar\\src\\main\\webapp\\images\\products";
             File dir = new File(uploadDir);
             if (!dir.exists()) dir.mkdirs();
@@ -58,7 +58,6 @@ public class ProductImageController extends HttpServlet {
             // Path for DB (relative to webapp root)
             String relativePath = "images/products/" + fileName;
 
-            // 4. Persistence Logic
             Product product = new Product();
             product.setId(productId);
 

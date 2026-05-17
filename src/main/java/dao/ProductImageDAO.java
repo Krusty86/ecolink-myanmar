@@ -13,7 +13,6 @@ public class ProductImageDAO {
 
     // ================= MAPPER =================
     private static ProductImage mapProductImage(ResultSet rs) throws SQLException {
-        // We only map the Product ID to the Product object to avoid deep nesting/recursion
         Product p = new Product();
         p.setId(rs.getLong("product_id"));
 
@@ -107,7 +106,6 @@ public class ProductImageDAO {
     }
 
     // ================= EXTRA: FIND BY PRODUCT =================
-    // Since one product can have multiple images, this is very useful for your EcoLink gallery
     public static List<ProductImage> findByProductId(Long productId) {
         List<ProductImage> list = new ArrayList<>();
         String sql = "SELECT * FROM product_images WHERE product_id = ?";

@@ -14,8 +14,6 @@ public class ImpactLogDAO {
         User user = new User();
         user.setId(rs.getLong("user_id"));
         user.setUsername(rs.getString("username")); // Joined from users table
-        user.setBusiness_name(rs.getString("business_name"));
-
         return new ImpactLog(
             rs.getLong("id"),
             user,
@@ -45,7 +43,7 @@ public class ImpactLogDAO {
         return null;
     }
 
-    // 2. Read (Find All) - Best for Leaderboards
+    // 2. Read (Find All) 
     public static List<ImpactLog> findAll() {
         List<ImpactLog> list = new ArrayList<>();
         String sql = "SELECT il.*, u.username, u.business_name FROM impact_logs il " +

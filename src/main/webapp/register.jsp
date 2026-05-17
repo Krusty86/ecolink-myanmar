@@ -50,7 +50,6 @@
         <div class="row justify-content-center">
             <div class="col-md-5">
                 
-                <%-- Error Handling from Servlet --%>
                 <c:if test="${not empty error}">
                     <div class="alert alert-danger border-0 shadow-sm animate__animated animate__shakeX">
                         <i class="bi bi-x-circle-fill me-2"></i> ${error}
@@ -63,11 +62,8 @@
                         <p class="text-muted">Create your account to start shopping.</p>
                     </div>
 
-                    <%-- Action points to your UserServlet --%>
                     <form action="login" method="post">
                         <input type="hidden" name="mode" value="SAVE">
-                        
-                        <%-- Username Field --%>
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Username</label>
                             <div class="input-group">
@@ -77,7 +73,6 @@
                             </div>
                         </div>
 
-                        <%-- Email Field --%>
                         <div class="mb-3">
                             <label class="form-label small fw-bold">Email address</label>
                             <div class="input-group">
@@ -87,7 +82,7 @@
                             </div>
                         </div>
 
-                        <%-- Password Field --%>
+
                         <div class="mb-4">
                             <label class="form-label small fw-bold">Password</label>
                             <div class="input-group">
@@ -122,7 +117,7 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     
-    <%-- Simple Client-side validation --%>
+
     <script>
         const form = document.querySelector('form');
         const password = document.getElementById('password');

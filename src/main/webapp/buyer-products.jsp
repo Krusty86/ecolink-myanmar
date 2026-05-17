@@ -1,9 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
-<%@ page import="java.util.*" %>
-<%@ page import="dao.ProductImageDAO" %>
-<%@ page import="entity.ProductImage" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn"%>
+<%@ page import="java.util.*"%>
+<%@ page import="dao.ProductImageDAO"%>
+<%@ page import="entity.ProductImage"%>
 
 <%
     // ============================
@@ -25,156 +26,246 @@
     request.setAttribute("productImages", productImages);
 %>
 
-<c:set var="defaultImagePath" value="images/products/default.png"/>
+<c:set var="defaultImagePath" value="images/products/default.png" />
 
 <style>
-    :root { --primary-green: #52a675; }
-    body { background-color: #f8fcf9; }
-    .product-card { border: none; border-radius: 12px; transition: transform 0.2s; overflow: hidden; }
-    .product-card:hover { transform: translateY(-5px); }
-    /* Ensure all images are the same size and look professional */
-    .product-img-container {
-        height: 200px;
-        width: 100%;
-        background-color: #f0f0f0;
-        overflow: hidden;
-    }
-    .product-img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-    }
-    /* Sidebar Sticky logic */
+:root {
+	--primary-green: #52a675;
+}
+
+body {
+	background-color: #f8fcf9;
+}
+
+.product-card {
+	border: none;
+	border-radius: 12px;
+	transition: transform 0.2s;
+	overflow: hidden;
+}
+
+.product-card:hover {
+	transform: translateY(-5px);
+}
+/* Ensure all images are the same size and look professional */
+.product-img-container {
+	height: 200px;
+	width: 100%;
+	background-color: #f0f0f0;
+	overflow: hidden;
+}
+
+.product-img {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+}
+/* Sidebar Sticky logic */
 .sticky-sidebar {
-    position: -webkit-sticky; /* for Safari */
-    position: sticky;
-    top: 2rem; /* Distance from the top of the screen when scrolling */
-    z-index: 100;
-    /* Optional: Max height to ensure it doesn't overflow the screen */
-    max-height: calc(100vh - 4rem);
-    overflow-y: auto;
+	position: -webkit-sticky; /* for Safari */
+	position: sticky;
+	top: 2rem; /* Distance from the top of the screen when scrolling */
+	z-index: 100;
+	max-height: calc(100vh - 4rem);
+	overflow-y: auto;
 }
 
 /* Hide scrollbar for the sidebar if it overflows */
 .sticky-sidebar::-webkit-scrollbar {
-    width: 0px;
+	width: 0px;
+}
+
+.product-item-clickable:hover .product-card {
+	box-shadow: 0 10px 20px rgba(82, 166, 117, 0.15) !important;
+	border: 1px solid var(--primary-green) !important;
 }
 </style>
 
 <div class="container py-5">
-    <div class="mb-4">
-        <h1 class="fw-bold">All Products</h1>
-        <p class="text-muted">
-            Browse our collection of ${fn:length(products)} eco-friendly products
-        </p>
-    </div>
+	<div class="mb-4">
+		<h1 class="fw-bold">All Products</h1>
+		<p class="text-muted">Browse our collection of
+			${fn:length(products)} eco-friendly products</p>
+	</div>
 
-    <div class="row g-4">
-	<div class="col-lg-2">
-    <div class="bg-white p-4 rounded-3 shadow-sm sticky-sidebar">
-        <h5 class="fw-bold mb-3">Categories</h5>
-        <form action="products" method="GET">
+	<div class="row g-4">
+		<div class="col-lg-2">
+			<div class="bg-white p-4 rounded-3 shadow-sm sticky-sidebar">
+				<h5 class="fw-bold mb-3">Categories</h5>
+				<form id="categoryFilterForm" onsubmit="return false;">
+					<c:forEach var="cat" items="${category}">
+						<div class="form-check mb-2">
+							<input class="form-check-input filter-checkbox" type="checkbox"
+								value="${cat.id}" id="cat_${cat.id}"> <label
+								class="form-check-label" for="cat_${cat.id}">${cat.name}</label>
+						</div>
+					</c:forEach>
+				</form>
+			</div>
+		</div>
+
+		<div class="col-lg-10">
+			<div class="row g-4 sticky-sidebar">
+				<div class="col"></div>
+				<div class="col">
+					<div
+						class="input-group bg-light rounded-pill px-3 py-1 border mb-4">
+						<input type="text" id="productSearch"
+							class="form-control bg-transparent border-0 shadow-none small"
+							placeholder="Search products..."> <span
+							class="input-group-text bg-transparent border-0"> <i
+							class="bi bi-search text-success"></i>
+						</span>
+					</div>
+				</div>
+			</div>
+			<div class="row g-4" id="products-grid">
+				<c:choose>
+					<c:when test="${not empty products}">
+						<c:forEach var="product" items="${products}">
+							<div class="col-md-4 product-item product-item-clickable"
+								data-category="${product.category.id}"
+								onclick="window.location.href='products?mode=VIEWDETAIL&id=${product.id}'"
+								style="cursor: pointer;">
+								<div class="card product-card shadow-sm h-100 border-0">
+
+									<div class="product-img-container">
+										<c:choose>
+											<c:when test="${productImages[product.id] != null}">
+												<img
+													src="${pageContext.request.contextPath}/${productImages[product.id]}"
+													class="product-img" alt="${product.name}">
+											</c:when>
+											<c:otherwise>
+												<img
+													src="${pageContext.request.contextPath}/${defaultImagePath}"
+													class="product-img" alt="No image available">
+											</c:otherwise>
+										</c:choose>
+									</div>
+
+									<div class="card-body">
+										<div
+											class="d-flex justify-content-between align-items-start mb-2">
+											<small class="text-success fw-bold text-uppercase"
+												style="font-size: 0.7rem;"> ${product.category.name}
+											</small>
+											<c:choose>
+												<c:when test="${product.status == 'ACTIVE'}">
+													<span class="badge bg-success rounded-pill"
+														style="font-size: 0.65rem;">ACTIVE</span>
+												</c:when>
+												<c:when test="${product.status == 'OUT_OF_STOCK'}">
+													<span class="badge bg-danger rounded-pill"
+														style="font-size: 0.65rem;">OUT OF STOCK</span>
+												</c:when>
+												<c:otherwise>
+													<span class="badge bg-secondary rounded-pill"
+														style="font-size: 0.65rem;">${product.status}</span>
+												</c:otherwise>
+											</c:choose>
+										</div>
+
+										<h6 class="fw-bold mb-1">${product.name}</h6>
+
+										<div class="bg-light p-2 rounded-2 mb-3">
+											<div class="d-flex justify-content-between small">
+												<span class="text-muted">Material:</span> <span
+													class="fw-medium">${product.material_type}</span>
+											</div>
+											<div class="d-flex justify-content-between small">
+												<span class="text-muted">Stock:</span> <span
+													class="${product.qty < 5 ? 'text-danger fw-bold' : 'text-dark'}">${product.qty}
+													units</span>
+											</div>
+										</div>
+
+										<div
+											class="d-flex justify-content-between align-items-center mt-auto">
+											<div>
+												<span class="fs-5 fw-bold text-dark">${product.price}</span>
+												<small class="text-muted">MMK</small>
+											</div>
+											<form action="carts" method="POST" class="m-0">
+												<input type="hidden" name="mode" value="ADD"> <input
+													type="hidden" name="productId" value="${product.id}">
+												<button type="submit"
+													class="btn btn-dark btn-sm rounded-pill px-3"
+													${product.qty <= 0 ? 'disabled' : ''}>
+													${product.qty <= 0 ? 'Out of Stock' : 'Add to Cart'}</button>
+											</form>
+										</div>
+									</div>
+								</div>
+							</div>
+						</c:forEach>
+					</c:when>
+					<c:otherwise>
+						<div class="col-12 text-center py-5">
+							<i class="bi bi-search fs-1 text-muted"></i>
+							<h4 class="mt-3">No products found</h4>
+						</div>
+					</c:otherwise>
+				</c:choose>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+	const checkboxes = document.querySelectorAll('.filter-checkbox');
+    const searchInput = document.getElementById('productSearch'); // New
+    const products = document.querySelectorAll('.product-item');
+
+    function filterProducts() {
+        const query = searchInput.value.toLowerCase(); // Get search text
+        const checkedCategories = Array.from(checkboxes)
+            .filter(cb => cb.checked)
+            .map(cb => cb.value);
+
+        products.forEach(product => {
+            const productCategory = product.getAttribute('data-category');
+            const productName = product.querySelector('h6').innerText.toLowerCase();
+            const productMaterial = product.querySelector('.fw-medium').innerText.toLowerCase();
+
+            // Check Category Match
+            const categoryMatch = checkedCategories.length === 0 || checkedCategories.includes(productCategory);
             
-            <c:forEach var="cat" items="${category}">
-                <div class="form-check mb-2">
-                    <input class="form-check-input" 
-                           type="checkbox" 
-                           name="category" 
-                           value="${cat.id}" 
-                           id="cat_${cat.id}"
-                           <c:if test="${fn:contains(paramValues.category, cat.id)}">checked</c:if>>
-                    
-                    <label class="form-check-label" for="cat_${cat.id}">
-                        ${cat.name}
-                    </label>
-                </div>
-            </c:forEach>
+            // Check Search Match (Checks name and material)
+            const searchMatch = productName.includes(query) || productMaterial.includes(query);
 
-            <button type="submit" class="btn btn-sm btn-success mt-3 w-100">
-                Apply Filters
-            </button>
-        </form>
-    </div>
-</div>
+            // Display if BOTH match
+            if (categoryMatch && searchMatch) {
+                product.style.display = 'block';
+                product.style.opacity = '1';
+            } else {
+                product.style.display = 'none';
+            }
+        });
+        
+        // Handle "No Products Found" message
+        const visibleProducts = Array.from(products).filter(p => p.style.display !== 'none');
+        const emptyMsg = document.getElementById('no-products-msg');
+        if (visibleProducts.length === 0) {
+            if (!emptyMsg) {
+                const msg = document.createElement('div');
+                msg.id = 'no-products-msg';
+                msg.className = 'col-12 text-center py-5';
+                msg.innerHTML = '<i class="bi bi-search fs-1 text-muted"></i><h4 class="mt-3">No products match your criteria</h4>';
+                document.getElementById('products-grid').appendChild(msg);
+            }
+        } else if (emptyMsg) {
+            emptyMsg.remove();
+        }
+    }
 
-        <div class="col-lg-10">
-            <div class="row g-4" id="products-grid">
-                <c:choose>
-                    <c:when test="${not empty products}">
-                        <c:forEach var="product" items="${products}">
-                            <div class="col-md-4">
-                                <div class="card product-card shadow-sm h-100 border-0">
-                                    
-                                    <div class="product-img-container">
-                                        <c:choose>
-                                            <c:when test="${productImages[product.id] != null}">
-                                                <img src="${pageContext.request.contextPath}/${productImages[product.id]}" 
-                                                     class="product-img" alt="${product.name}">
-                                            </c:when>
-                                            <c:otherwise>
-                                                <img src="${pageContext.request.contextPath}/${defaultImagePath}" 
-                                                     class="product-img" alt="No image available">
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </div>
+    // Listener for checkboxes
+    checkboxes.forEach(cb => {
+        cb.addEventListener('change', filterProducts);
+    });
 
-                                    <div class="card-body">
-                                        <div class="d-flex justify-content-between align-items-start mb-2">
-                                            <small class="text-success fw-bold text-uppercase" style="font-size: 0.7rem;">
-                                                ${product.category.name}
-                                            </small>
-                                            <c:choose>
-                                                <c:when test="${product.status == 'ACTIVE'}">
-                                                    <span class="badge bg-success rounded-pill" style="font-size: 0.65rem;">ACTIVE</span>
-                                                </c:when>
-                                                <c:when test="${product.status == 'OUT_OF_STOCK'}">
-                                                    <span class="badge bg-danger rounded-pill" style="font-size: 0.65rem;">OUT OF STOCK</span>
-                                                </c:when>
-                                                <c:otherwise>
-                                                    <span class="badge bg-secondary rounded-pill" style="font-size: 0.65rem;">${product.status}</span>
-                                                </c:otherwise>
-                                            </c:choose>
-                                        </div>
-
-                                        <h6 class="fw-bold mb-1">${product.name}</h6>
-
-                                        <div class="bg-light p-2 rounded-2 mb-3">
-                                            <div class="d-flex justify-content-between small">
-                                                <span class="text-muted">Material:</span>
-                                                <span class="fw-medium">${product.material_type}</span>
-                                            </div>
-                                            <div class="d-flex justify-content-between small">
-                                                <span class="text-muted">Stock:</span>
-                                                <span class="${product.qty < 5 ? 'text-danger fw-bold' : 'text-dark'}">${product.qty} units</span>
-                                            </div>
-                                        </div>
-
-                                        <div class="d-flex justify-content-between align-items-center mt-auto">
-                                            <div>
-                                                <span class="fs-5 fw-bold text-dark">${product.price}</span>
-                                                <small class="text-muted">MMK</small>
-                                            </div>
-                                            <form action="carts" method="POST" class="m-0">
-                                                <input type="hidden" name="mode" value="ADD">
-                                                <input type="hidden" name="productId" value="${product.id}">
-                                                <button type="submit" class="btn btn-dark btn-sm rounded-pill px-3" ${product.qty <= 0 ? 'disabled' : ''}>
-                                                    ${product.qty <= 0 ? 'Out of Stock' : 'Add to Cart'}
-                                                </button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </c:forEach>
-                    </c:when>
-                    <c:otherwise>
-                        <div class="col-12 text-center py-5">
-                            <i class="bi bi-search fs-1 text-muted"></i>
-                            <h4 class="mt-3">No products found</h4>
-                        </div>
-                    </c:otherwise>
-                </c:choose>
-            </div>
-        </div>
-    </div>
-</div>
+    // Listener for search input
+    searchInput.addEventListener('keyup', filterProducts);
+});
+</script>

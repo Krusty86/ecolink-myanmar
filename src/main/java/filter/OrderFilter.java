@@ -16,7 +16,6 @@ public class OrderFilter implements Filter{
 	public void doFilter(ServletRequest req, ServletResponse resp, FilterChain chain)
 			throws IOException, ServletException {
 		// TODO Auto-generated method stub
-//		change ServletRequest to HttpServletRequest, same with response
 		HttpServletRequest request = (HttpServletRequest) req;
 		HttpServletResponse response = (HttpServletResponse) resp;
 

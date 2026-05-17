@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+
 <style>
 :root {
       --bs-primary: #52a868; /* Converted from oklch(0.5 0.15 142.5) */

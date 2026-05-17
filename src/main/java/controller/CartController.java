@@ -45,11 +45,11 @@ public class CartController extends HttpServlet {
         try {
             Long productId = Long.parseLong(req.getParameter("productId"));
             // Fallback to 1 if qty isn't passed from the product grid
-            String qtyStr = req.getParameter("qty");
+            String qtyStr = req.getParameter("quantity");
             int qty = (qtyStr != null) ? Integer.parseInt(qtyStr) : 1;
 
             // 3. Find Product and update Session Cart
-            Optional<Product> productOpt = Optional.ofNullable(productDAO.findById(productId));
+            Optional<Product> productOpt = Optional.ofNullable(ProductDAO.findById(productId));
             if (productOpt.isPresent()) {
                 Cart cart = (Cart) session.getAttribute("cart");
                 if (cart == null) {

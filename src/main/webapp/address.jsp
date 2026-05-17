@@ -43,7 +43,6 @@
                             <div class="card-body p-4">
                                 <div class="d-flex align-items-center mb-3">
                                     <div class="rounded-circle bg-light p-2 me-3">
-                                        <%-- Enum Logic: Switching icons based on your specific AddressType enums --%>
                                         <c:choose>
                                             <c:when test="${addr.address_type == 'SHIPPING'}">
                                                 <i class="bi bi-truck text-success fs-5"></i>
@@ -76,7 +75,7 @@
                                 <div class="d-flex gap-2 mt-auto">
                                     <c:if test="${!addr.is_default}">
                                         <form action="profile" method="POST" class="flex-grow-1">
-                                            <input type="hidden" name="mode" value="SET_DEFAULT_ADDRESS">
+                                            <input type="hidden" name="mode" value="ADDDEFAULT">
                                             <input type="hidden" name="aid" value="${addr.id}">
                                             <button type="submit" class="btn btn-outline-success btn-sm w-100 rounded-pill">Set Default</button>
                                         </form>
@@ -137,7 +136,6 @@
                     <div class="mb-3">
                         <label class="form-label small fw-bold text-uppercase opacity-75">Address Type</label>
                         <select name="type" class="form-select rounded-3">
-                            <%-- Values exactly match your enums/AddressType.java --%>
                             <option value="SHIPPING">Shipping Address</option>
                             <option value="BILLING">Billing Address</option>
                             <option value="PICKUP">Pickup Point</option>

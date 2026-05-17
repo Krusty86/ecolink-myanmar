@@ -6,7 +6,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>${pageTitle}</title>
-    <!-- Combined Header: CSS links go here -->
     <c:import url="template/admin-header.jsp"></c:import>
 </head>
 
@@ -14,7 +13,6 @@
 
 	<c:import url="template/admin-sideBar.jsp"></c:import>
     <main class="content-offset">
-    <!-- FIX: Added Mobile Toggle Button -->
     <nav class="navbar navbar-expand-lg border-bottom bg-body d-md-none p-2">
         <div class="container-fluid">
             <button class="btn btn-outline-primary" id="mobileToggle">
@@ -30,14 +28,10 @@
 </div>
 
 </main>
-    <!-- 3. Footer (Usually copyright info) -->
     <c:import url="template/admin-footer.jsp"></c:import>
-
-    <!-- 4. Essential Scripts (Must be at the very bottom) -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script>
-        // Essential to make your <i data-lucide="..."> tags work
         lucide.createIcons();
     </script>
 </body>
