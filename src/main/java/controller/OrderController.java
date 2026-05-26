@@ -43,6 +43,26 @@ public class OrderController extends HttpServlet {
             return;
         }
 
+     // --- 1. PARALLEL CHECKOUT STOCK VALIDATION (NEW CONDITION From Presentation day) ---
+        List<String> stockErrors = new ArrayList<>();
+        for (CartItem ci : cart.getItems()) {
+            // Fetch fresh, live inventory metrics straight from the DB
+            Product dbProduct = ProductDAO.findById(ci.getProduct().getId());
+            
+            if (dbProduct == null) {
+                stockErrors.add("Product '" + ci.getProduct().getName() + "' is no longer available.");
+            } else if (dbProduct.getQty() < ci.getQuantity()) {
+                stockErrors.add("Sorry, '" + dbProduct.getName() + "' only has " + dbProduct.getQty() + " units left in stock.");
+            }
+        }
+
+        // If any items are out of stock, reject the checkout transaction immediately
+        if (!stockErrors.isEmpty()) {
+            req.setAttribute("errors", stockErrors); // Passes an array list of issues to the view layer
+            req.setAttribute("pageContent", "cart.jsp");
+            req.getRequestDispatcher("layout.jsp").forward(req, resp);
+            return;
+        }
         // cart checkout for default address
         String addressIdStr = req.getParameter("addressId");
         Address selectedAddress = null;

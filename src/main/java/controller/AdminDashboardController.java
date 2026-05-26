@@ -41,26 +41,22 @@ public class AdminDashboardController extends HttpServlet {
 
     private void addProduct(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
-            // 1. Gather all raw variables from your Bootstrap Modal form entries
-            String name = req.getParameter("name");
+        	String name = req.getParameter("name");
             String categoryIdStr = req.getParameter("categoryId");
             String priceStr = req.getParameter("price");
             String qtyStr = req.getParameter("qty");
             String materialType = req.getParameter("material_type");
             String plasticSavedStr = req.getParameter("plastic_saved");
 
-            // 2. Safely parse the form values into strongly-typed objects
             Long categoryId = Long.parseLong(categoryIdStr);
             BigDecimal price = new BigDecimal(priceStr);
             Long qty = Long.parseLong(qtyStr);
 
-            // Fallback safely to zero if optional environmental metrics are submitted blank
             BigDecimal plasticSaved = BigDecimal.ZERO;
             if (plasticSavedStr != null && !plasticSavedStr.trim().isEmpty()) {
                 plasticSaved = new BigDecimal(plasticSavedStr);
             }
 
-            // 3. Assemble Entity Data Payloads
             Category category = new Category();
             category.setId(categoryId);
 
@@ -70,22 +66,15 @@ public class AdminDashboardController extends HttpServlet {
             product.setMaterial_type(materialType);
             product.setPlastic_saved_per_unit(plasticSaved);
             product.setQty(qty);
-            product.setPrice(price); // Set price for the second SQL execution inside the DAO
-            
-            // Match status definitions depending on your project structure (e.g., Draft vs Published)
-            // If your enum looks like ProductStatus.DRAFT / ProductStatus.PUBLISHED:
+            product.setPrice(price); 
             try {
                 product.setStatus(enums.ProductStatus.valueOf("DRAFT")); 
             } catch (Exception ex) {
-                // Fallback default catch-all if your enum structure varies
                 product.setStatus(enums.ProductStatus.values()[0]); 
             }
-
-            // 4. Persistence pipeline execution
             Product savedProduct = ProductDAO.save(product);
 
             if (savedProduct != null && savedProduct.getId() != null) {
-                // Success! Send clean query signals back to the main management grid view interface
                 resp.sendRedirect("home?mode=PRODUCTS&status=success");
             } else {
                 resp.sendRedirect("home?mode=PRODUCTS&status=db_error");
