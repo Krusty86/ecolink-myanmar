@@ -2,6 +2,24 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <div class="container py-5">
+<c:if test="${not empty errors}">
+    <div class="alert alert-danger alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
+        <div class="fw-bold mb-1"><i class="bi bi-exclamation-triangle-fill me-2"></i>Checkout Blocked: Items Sold Out</div>
+        <ul class="mb-0 ps-3">
+            <c:forEach var="err" items="${errors}">
+                <li><c:out value="${err}"/></li>
+            </c:forEach>
+        </ul>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</c:if>
+
+<c:if test="${not empty error}">
+    <div class="alert alert-warning alert-dismissible fade show rounded-3 mb-4 shadow-sm" role="alert">
+        <i class="bi bi-exclamation-circle-fill me-2"></i><c:out value="${error}"/>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</c:if>
     <div class="row">
         <div class="col-lg-8">
             <div class="card border-0 shadow-sm rounded-3">
